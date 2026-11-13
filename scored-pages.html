@@ -110,7 +110,7 @@
   .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:40}
   .scrim[hidden],.dialog[hidden]{display:none}
   /* Filter dialog — uses the page's tokens: 14px card radius, Open Sans, primary blue, 3px button radius */
-  .dialog{position:absolute;z-index:50;left:412px;top:16px;width:440px;background:#fff;border:1px solid #c9ccd6;border-radius:14px;padding:24px 28px 24px;box-shadow:0 12px 32px rgba(27,27,31,.18)}
+  .dialog{position:absolute;z-index:50;left:412px;top:16px;width:620px;background:#fff;border:1px solid #c9ccd6;border-radius:14px;padding:24px 28px 24px;box-shadow:0 12px 32px rgba(27,27,31,.18)}
   .dialog .close{position:absolute;right:14px;top:14px;width:32px;height:32px;border:0;background:none;border-radius:4px;display:grid;place-items:center;cursor:pointer;color:#45474f}
   .dialog .close:hover{background:#f0f2f8}
   .dlg-title{font-size:18px;font-weight:700;margin:0 0 20px}
@@ -151,7 +151,6 @@
   .proto-note .x{position:absolute;right:6px;top:4px;border:0;background:none;cursor:pointer;font-size:16px;line-height:1;padding:4px;color:var(--muted)}
 
   /* ---------- Scored Pages additions ---------- */
-  .dialog{width:470px}
   .dlg-section + .dlg-section{margin-top:14px}
   .checks.wrap{flex-wrap:wrap;gap:12px 28px}
   td.num{color:#45474f;padding-left:12px;width:60px}
@@ -171,6 +170,26 @@
   .pagesize{display:flex;align-items:center;gap:8px}
   .pagesize label{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#45474f}
   .pagesize select{height:32px;border:1px solid var(--ctl-border);border-radius:4px;padding:0 8px;background:#fff;color:#1b1b1f;font:inherit;font-size:14px}
+
+  /* ---------- Slider (replaces % number input) ---------- */
+  .prog-row{gap:18px;align-items:center}
+  .slider{flex:1;display:flex;align-items:center;gap:10px;font-size:14px;color:#2b2b30;padding-top:30px;padding-bottom:12px}
+  .slider .end{flex:none;min-width:1.6em;text-align:center}
+  .track-wrap{position:relative;flex:1;--thumb:26px}
+  .track-wrap input[type=range]{-webkit-appearance:none;appearance:none;display:block;width:100%;height:26px;margin:0;background:transparent;cursor:pointer}
+  .track-wrap input[type=range]:focus{outline:none}
+  .track-wrap input[type=range]::-webkit-slider-runnable-track{height:20px;border:1px solid var(--ctl-border);border-radius:3px;background:#fff}
+  .track-wrap input[type=range]::-moz-range-track{height:18px;border:1px solid var(--ctl-border);border-radius:3px;background:#fff}
+  .track-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--blue);border:2px solid #fff;box-shadow:0 0 0 1px #0a4fbf;margin-top:-4px}
+  .track-wrap input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--blue);border:2px solid #fff;box-shadow:0 0 0 1px #0a4fbf}
+  .track-wrap input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 2px #fff,0 0 0 5px var(--focus)}
+  .track-wrap input[type=range]:focus-visible::-moz-range-thumb{box-shadow:0 0 0 2px #fff,0 0 0 5px var(--focus)}
+  .track-wrap input[aria-invalid="true"]::-webkit-slider-runnable-track{border-color:var(--red);box-shadow:0 0 0 1px var(--red)}
+  .bubble{position:absolute;bottom:calc(100% + 8px);left:calc(var(--thumb)/2 + (100% - var(--thumb)) * var(--p,0));transform:translateX(-50%);background:#2b2b30;color:#fff;font-size:13px;font-weight:600;line-height:1;padding:6px 8px;border-radius:4px;white-space:nowrap;pointer-events:none}
+  .bubble::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#2b2b30;border-bottom:0}
+  .ticks{position:absolute;left:0;right:0;top:calc(100% + 4px);height:8px;pointer-events:none}
+  .ticks span{position:absolute;top:0;width:1px;height:8px;background:#7d808c;left:calc(var(--thumb)/2 + (100% - var(--thumb)) * var(--t))}
+  @media (forced-colors: active){.track-wrap input[type=range]{appearance:auto;-webkit-appearance:auto}.bubble{forced-color-adjust:none}}
 </style>
 </head>
 <body>
@@ -253,10 +272,15 @@
                 <label><input type="radio" name="progress-op" value="eq" aria-label="Equal to"><span aria-hidden="true">=</span></label>
                 <label><input type="radio" name="progress-op" value="gt" aria-label="Greater than or equal to"><span aria-hidden="true">≥</span></label>
               </div>
-              <div class="pct-wrap">
-                <label for="progress-pct" class="sr-only">Student progress percentage, 0 to 100</label>
-                <input id="progress-pct" type="number" inputmode="numeric" min="0" max="100" step="1" value="0" aria-describedby="progress-err">
-                <span aria-hidden="true">%</span>
+              <div class="slider">
+                <span class="end" aria-hidden="true">0</span>
+                <div class="track-wrap" style="--p:0">
+                  <span class="bubble" aria-hidden="true">0%</span>
+                  <label for="progress-pct" class="sr-only">Student progress percentage, 0 to 100</label>
+                  <input id="progress-pct" type="range" min="0" max="100" step="1" value="0" aria-valuetext="0%" aria-describedby="progress-err">
+                  <div class="ticks" aria-hidden="true"><span style="--t:0.0"></span><span style="--t:0.1"></span><span style="--t:0.2"></span><span style="--t:0.3"></span><span style="--t:0.4"></span><span style="--t:0.5"></span><span style="--t:0.6"></span><span style="--t:0.7"></span><span style="--t:0.8"></span><span style="--t:0.9"></span><span style="--t:1.0"></span></div>
+                </div>
+                <span class="end" aria-hidden="true">100</span>
               </div>
             </div>
             <div class="err" id="progress-err" aria-live="polite"></div>
@@ -270,10 +294,15 @@
                 <label><input type="radio" name="score-op" value="eq" aria-label="Equal to"><span aria-hidden="true">=</span></label>
                 <label><input type="radio" name="score-op" value="gt" aria-label="Greater than or equal to"><span aria-hidden="true">≥</span></label>
               </div>
-              <div class="pct-wrap">
-                <label for="score-pct" class="sr-only">Average score percentage, 0 to 100</label>
-                <input id="score-pct" type="number" inputmode="numeric" min="0" max="100" step="1" value="0" aria-describedby="score-err">
-                <span aria-hidden="true">%</span>
+              <div class="slider">
+                <span class="end" aria-hidden="true">0</span>
+                <div class="track-wrap" style="--p:0">
+                  <span class="bubble" aria-hidden="true">0%</span>
+                  <label for="score-pct" class="sr-only">Average score percentage, 0 to 100</label>
+                  <input id="score-pct" type="range" min="0" max="100" step="1" value="0" aria-valuetext="0%" aria-describedby="score-err">
+                  <div class="ticks" aria-hidden="true"><span style="--t:0.0"></span><span style="--t:0.1"></span><span style="--t:0.2"></span><span style="--t:0.3"></span><span style="--t:0.4"></span><span style="--t:0.5"></span><span style="--t:0.6"></span><span style="--t:0.7"></span><span style="--t:0.8"></span><span style="--t:0.9"></span><span style="--t:1.0"></span></div>
+                </div>
+                <span class="end" aria-hidden="true">100</span>
               </div>
             </div>
             <div class="err" id="score-err" aria-live="polite"></div>
@@ -335,7 +364,7 @@
     <li><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> move between controls</li>
     <li><kbd>Enter</kbd> / <kbd>Space</kbd> open Advanced Search</li>
     <li><kbd>←</kbd> <kbd>→</kbd> pick ≤ = ≥</li>
-    <li><kbd>↑</kbd> <kbd>↓</kbd> change the %</li>
+    <li>Slider: <kbd>←</kbd> <kbd>→</kbd> ±1, <kbd>PgUp</kbd> <kbd>PgDn</kbd> ±10, <kbd>Home</kbd> <kbd>End</kbd> 0 / 100</li>
     <li><kbd>Space</kbd> toggles an attempts option</li>
     <li><kbd>Enter</kbd> applies · <kbd>Esc</kbd> closes</li>
   </ul>
@@ -498,6 +527,18 @@
   }
   function render(prefix){ state.page=1; renderChips(); renderRows(); if(prefix!==false) announce(prefix); }
 
+
+  /* ---------- Slider sync: bubble position + spoken value ---------- */
+  function syncSliders(){
+    document.querySelectorAll('.track-wrap input[type=range]').forEach(r=>{
+      const v=Number(r.value);
+      r.closest('.track-wrap').style.setProperty('--p', v/100);
+      r.closest('.track-wrap').querySelector('.bubble').textContent=v+'%';
+      r.setAttribute('aria-valuetext', v+'%');
+    });
+  }
+  document.querySelectorAll('.track-wrap input[type=range]').forEach(r=>r.addEventListener('input',syncSliders));
+
   /* Search */
   let t;
   $("#q").addEventListener("input",e=>{ state.q=e.target.value.trim(); state.page=1; renderRows(); clearTimeout(t); t=setTimeout(()=>announce(),500); });
@@ -532,6 +573,7 @@
       $(`#${k}-pct`).value=state[k].pct; setErr(k,"");
     });
     form.querySelectorAll("input[name=att]").forEach(c=>c.checked=state.att.includes(c.value));
+    syncSliders();
     dialog.hidden=false; scrim.hidden=false; advBtn.setAttribute("aria-expanded","true");
     document.querySelectorAll(outside).forEach(el=>el.setAttribute("inert",""));
     (form.querySelector("input[name=progress-op]:checked")||form.querySelector("input[name=progress-op]")).focus();
@@ -547,7 +589,7 @@
 
   $("#dlgClear").addEventListener("click",()=>{
     form.querySelectorAll("input[type=radio],input[type=checkbox]").forEach(i=>i.checked=false);
-    ["progress","score"].forEach(k=>{$(`#${k}-pct`).value=0; setErr(k,"")});
+    ["progress","score"].forEach(k=>{$(`#${k}-pct`).value=0; setErr(k,"")}); syncSliders();
     statusEl.textContent=""; setTimeout(()=>statusEl.textContent="Filter selections cleared. Press Apply to update the list.",40);
     form.querySelector("input[name=progress-op]").focus();
   });
@@ -595,7 +637,7 @@
     }
   });
   form.addEventListener("keydown",e=>{
-    if(e.key==="Enter"&&e.target.matches("input[type=checkbox],input[type=radio]")){e.preventDefault();form.requestSubmit();}
+    if(e.key==="Enter"&&e.target.matches("input[type=checkbox],input[type=radio],input[type=range]")){e.preventDefault();form.requestSubmit();}
   });
 
   /* Sorting */
