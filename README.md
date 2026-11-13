@@ -12,7 +12,7 @@ The original per-filter dropdowns are replaced with a single **Advanced Search**
 ## Keyboard & WCAG 2.2 AA
 - Dialog: `role="dialog"`, `aria-modal`, focus moves in on open, Tab is contained, `Esc` closes, focus returns to the trigger; background is `inert`.
 - Comparison (`≤ = ≥`) is a native radio group (arrow keys).
-- Percentages use a native `<input type="range">` slider: ←/→ (or ↑/↓) ±1, Page Up/Down ±10, Home/End for 0/100; `aria-valuetext` announces "30%"; the value bubble is always visible (no hover-only content).
+- Percentages use a native `<input type="range">` slider: snaps to 10% intervals matching the tick marks; ←/→ (or ↑/↓) and Page Up/Down move ±10, Home/End for 0/100; `aria-valuetext` announces "30%"; the value bubble is always visible (no hover-only content).
 - Pointer users can click anywhere on the track instead of dragging (WCAG 2.5.7 Dragging Movements); the thumb is 26px (2.5.8 Target Size).
 - Chip remove buttons have descriptive names; focus moves to the next chip after removal.
 - Result counts are announced through a polite live region.
